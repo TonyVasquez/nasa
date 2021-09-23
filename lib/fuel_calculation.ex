@@ -8,7 +8,7 @@ defmodule NASA.FuelCalculation do
 
     Example:
     (Earth -> Moon -> Earth)
-    > NASA.FuelCalculation.calculate(28801, [{:launch, 9,807}, {:land, 1,62}, {:launch, 1,62}, {:land, 9,807}])
+    > NASA.FuelCalculation.calculate(28801, [{:launch, 9.807}, {:land, 1.62}, {:launch, 1.62}, {:land, 9.807}])
   """
 
   @type ship_mass() :: number()
