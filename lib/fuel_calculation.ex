@@ -23,22 +23,28 @@ defmodule NASA.FuelCalculation do
 
   @spec calculate(ship_mass(), nonempty_list(route())) :: fuel_amount()
   def calculate(ship_mass, routes) do
+    routes = Enum.reverse(routes)
+
     Enum.reduce(routes, 0, fn part_of_flight, acc_fuel_amount ->
-      fuel_amount = _calculate(ship_mass, part_of_flight)
-      acc_fuel_amount + _calculate(fuel_amount, part_of_flight, fuel_amount)
+      total_mass = ship_mass + acc_fuel_amount
+
+      part_flight_fuel = _calculate(total_mass, part_of_flight)
+      part_flight_fuel_additional = _calculate(part_flight_fuel, part_of_flight, part_flight_fuel)
+
+      acc_fuel_amount + part_flight_fuel_additional
     end)
   end
 
   @spec _calculate(mass(), launch() | land(), fuel_amount()) :: fuel_amount()
-  defp _calculate(mass, route, acc_fuel_amount) when is_number(acc_fuel_amount) do
-    fuel_amount = _calculate(mass, route)
+  defp _calculate(mass, part_of_flight, acc_fuel_amount) when is_number(acc_fuel_amount) do
+    fuel_amount = _calculate(mass, part_of_flight)
 
     cond do
       fuel_amount <= 0 ->
         acc_fuel_amount
 
       true ->
-        _calculate(fuel_amount, route, acc_fuel_amount + fuel_amount)
+        _calculate(fuel_amount, part_of_flight, acc_fuel_amount + fuel_amount)
     end
   end
 
