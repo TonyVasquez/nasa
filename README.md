@@ -1,21 +1,12 @@
 # Nasa
 
-**TODO: Add description**
+Run project: 
 
-## Installation
+- `./nasa iex -S mix run` 
+- `./nasa mix test`
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `nasa` to your list of dependencies in `mix.exs`:
+Docker:
 
-```elixir
-def deps do
-  [
-    {:nasa, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/nasa](https://hexdocs.pm/nasa).
+- `docker run -it --rm --name nasa -v "$PWD":/usr/src/nasa -w /usr/src/nasa elixir iex -S mix` (repl)
+- `docker run -it --rm --name nasa -v "$PWD":/usr/src/nasa -w /usr/src/nasa elixir mix test` (test)
 
