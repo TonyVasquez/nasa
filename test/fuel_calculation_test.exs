@@ -1,7 +1,7 @@
 defmodule NASA.FuelCalculationTest do
   use ExUnit.Case
 
-  alias NASA.FuelCalculation
+  alias NASA.Settings
 
   # gravity
   @moon 1.62
@@ -13,7 +13,7 @@ defmodule NASA.FuelCalculationTest do
     required_weight_of_fuel = 51898
 
     fuel_amount =
-      FuelCalculation.calculate(weight_of_equipment, [
+      Settings.calculator().calculate(weight_of_equipment, [
         {:launch, @earth},
         {:land, @moon},
         {:launch, @moon},
@@ -28,7 +28,7 @@ defmodule NASA.FuelCalculationTest do
     required_weight_of_fuel = 33388
 
     fuel_amount =
-      FuelCalculation.calculate(weight_of_equipment, [
+      Settings.calculator().calculate(weight_of_equipment, [
         {:launch, @earth},
         {:land, @mars},
         {:launch, @mars},
@@ -43,7 +43,7 @@ defmodule NASA.FuelCalculationTest do
     required_weight_of_fuel = 212_161
 
     fuel_amount =
-      FuelCalculation.calculate(weight_of_equipment, [
+      Settings.calculator().calculate(weight_of_equipment, [
         {:launch, @earth},
         {:land, @moon},
         {:launch, @moon},
