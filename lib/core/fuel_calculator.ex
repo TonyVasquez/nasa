@@ -1,9 +1,9 @@
 defmodule NASA.Core.FuelCalculator do
   @moduledoc """
-    Allow to calculate fuel required for the flight
+    Provides possibility to calculate fuel required for the flight
     to launch from one planet of the Solar system
     and to land on another planet of the Solar system,
-    depending on the flight route.
+    depending on the flight route
   """
 
   @type ship_mass() :: number()
@@ -14,23 +14,23 @@ defmodule NASA.Core.FuelCalculator do
   @type launch() :: {:launch, planet_gravity()}
   @type land() :: {:land, planet_gravity()}
 
-  @type route() :: launch() | land()
+  @type part_of_flight() :: launch() | land()
 
-  @spec calculate(ship_mass(), nonempty_list(route())) :: fuel_amount()
+  @spec calculate(ship_mass(), nonempty_list(part_of_flight())) :: fuel_amount()
   def calculate(ship_mass, routes) do
     routes = reverese_breakpoints(routes)
 
-    Enum.reduce(routes, 0, fn part_of_flight, acc_fuel_amount ->
-      total_mass = ship_mass + acc_fuel_amount
+    Enum.reduce(routes, 0, fn part_of_flight, total_fuel_amount ->
+      total_mass = ship_mass + total_fuel_amount
 
       part_flight_fuel = _calculate(total_mass, part_of_flight)
       part_flight_fuel_additional = _calculate(part_flight_fuel, part_of_flight, part_flight_fuel)
 
-      acc_fuel_amount + part_flight_fuel_additional
+      total_fuel_amount + part_flight_fuel_additional
     end)
   end
 
-  @spec _calculate(mass(), launch() | land(), fuel_amount()) :: fuel_amount()
+  @spec _calculate(mass(), part_of_flight(), fuel_amount()) :: fuel_amount()
   defp _calculate(mass, part_of_flight, acc_fuel_amount) do
     fuel_amount = _calculate(mass, part_of_flight)
 
@@ -44,16 +44,20 @@ defmodule NASA.Core.FuelCalculator do
   end
 
   @spec _calculate(mass(), launch()) :: fuel_amount()
-  defp _calculate(mass, {:launch, planet_gravity}), do: floor(mass * planet_gravity * 0.042 - 33)
+  defp _calculate(mass, {:launch, planet_gravity}),
+    do: floor(launch_formula(mass, planet_gravity))
 
   @spec _calculate(mass(), land()) :: fuel_amount()
-  defp _calculate(mass, {:land, planet_gravity}), do: floor(mass * planet_gravity * 0.033 - 42)
+  defp _calculate(mass, {:land, planet_gravity}), do: floor(land_formula(mass, planet_gravity))
 
-  @spec reverese_breakpoints(nonempty_list(route())) :: nonempty_list(route())
+  @spec reverese_breakpoints(nonempty_list(part_of_flight())) :: nonempty_list(part_of_flight())
   defp reverese_breakpoints(routes) do
     # Reverse route to start counting required fuel
     # for all steps before launch
 
     Enum.reverse(routes)
   end
+
+  defp launch_formula(mass, planet_gravity), do: mass * planet_gravity * 0.042 - 33
+  defp land_formula(mass, planet_gravity), do: mass * planet_gravity * 0.033 - 42
 end
